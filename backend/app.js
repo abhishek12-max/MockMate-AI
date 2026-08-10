@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const {errorMiddleware, notFoundMiddleware}= require("./middleware/error.middleware");
 const apiLimiter = require("./middleware/rateLimit.middleware");
 const authRoutes = require("./routes/auth.routes");
-
+const interviewRoutes = require("./routes/interview.routes");
 
 const app = express();
 
@@ -22,10 +22,9 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cookieParser());
-
 app.use("/api/auth", authRoutes);
+app.use("/api/interviews", interviewRoutes);
 
 
 
