@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
-const {errorMiddleware, notFoundMiddleware}= require("./middleware/error.middleware");
+const errorMiddleware = require("./middleware/error.middleware");
 const apiLimiter = require("./middleware/rateLimit.middleware");
 const authRoutes = require("./routes/auth.routes");
 const interviewRoutes = require("./routes/interview.routes");
@@ -32,6 +32,6 @@ app.use("/api/resumes", resumeRoutes);
 
 
 app.use(errorMiddleware);
-app.use(notFoundMiddleware);
+
 
 module.exports = app;

@@ -1,5 +1,60 @@
 const ai = require("../config/ai");
 
+
+// ==============================
+// AI HELPER
+// ==============================
+
+const generateAIResponse = async (prompt) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Gemini Error:", error);
+
+    const aiError = new Error(
+      "AI service is temporarily unavailable. Please try again."
+    );
+
+    aiError.statusCode = 503;
+
+    throw aiError;
+  }
+};
+
+
+// ==============================
+// AI JSON PARSER
+// ==============================
+
+const parseAIJson = (text) => {
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("AI JSON Parse Error:", error);
+
+    const aiError = new Error(
+      "AI returned an invalid response. Please try again."
+    );
+
+    aiError.statusCode = 502;
+
+    throw aiError;
+  }
+};
+
+
+// ==============================
+// GENERATE INTERVIEW QUESTIONS
+// ==============================
+
 const generateInterviewQuestions = async ({
   role,
   experienceLevel,
@@ -90,16 +145,15 @@ Rules:
 - Return JSON only.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-    },
-  });
+  const response = await generateAIResponse(prompt);
 
-  return JSON.parse(response.text);
+  return parseAIJson(response.text);
 };
+
+
+// ==============================
+// EVALUATE ANSWER
+// ==============================
 
 const evaluateAnswer = async ({
   role,
@@ -151,16 +205,15 @@ Rules:
 - Return JSON only.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-    },
-  });
+  const response = await generateAIResponse(prompt);
 
-  return JSON.parse(response.text);
+  return parseAIJson(response.text);
 };
+
+
+// ==============================
+// FINAL INTERVIEW REPORT
+// ==============================
 
 const generateInterviewReport = async ({
   role,
@@ -222,16 +275,15 @@ Rules:
 - Return JSON only.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-    },
-  });
+  const response = await generateAIResponse(prompt);
 
-  return JSON.parse(response.text);
+  return parseAIJson(response.text);
 };
+
+
+// ==============================
+// PARSE RESUME
+// ==============================
 
 const parseResume = async (rawText) => {
   const prompt = `
@@ -240,6 +292,7 @@ You are an expert resume parser.
 Extract structured information from the resume below.
 
 RESUME:
+
 ${rawText}
 
 Return ONLY valid JSON in exactly this format:
@@ -280,16 +333,15 @@ Rules:
 - Return JSON only.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash",
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-    },
-  });
+  const response = await generateAIResponse(prompt);
 
-  return JSON.parse(response.text);
+  return parseAIJson(response.text);
 };
+
+
+// ==============================
+// EXPORT
+// ==============================
 
 module.exports = {
   generateInterviewQuestions,
