@@ -12,7 +12,7 @@ import Resume from "./pages/Resume";
 import InterviewSetup from "./pages/InterviewSetup";
 import Interview from "./pages/Interview";
 import Report from "./pages/Report";
-
+import InterviewHistory from "./pages/InterviewHistory";
 
 const App = () => {
   return (
@@ -32,6 +32,7 @@ const App = () => {
         <Route path="/interviews/setup" element={<InterviewSetup />}/>
         <Route path="/interviews/:interviewId/report" element={<Report />}/>
         <Route path="/interviews/:interviewId" element={<Interview />}/>
+        <Route path="/interviews" element={<InterviewHistory />}/>
       </Routes>
     </BrowserRouter>
   );

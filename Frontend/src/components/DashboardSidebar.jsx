@@ -19,7 +19,7 @@ const DashboardSidebar = () => {
           M
         </div>
 
-        <span className="text-lg font-semibold">
+        <span className="text-lg font-semibold text-white">
           MockMate
           <span className="text-gray-500"> AI</span>
         </span>
@@ -28,6 +28,7 @@ const DashboardSidebar = () => {
       {/* Navigation */}
       <nav className="mt-12 space-y-2">
 
+        {/* Dashboard */}
         <Link
           to="/dashboard"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -39,6 +40,7 @@ const DashboardSidebar = () => {
           Dashboard
         </Link>
 
+        {/* Resume */}
         <Link
           to="/resume"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -50,6 +52,7 @@ const DashboardSidebar = () => {
           Resume
         </Link>
 
+        {/* Practice Interview */}
         <Link
           to="/interviews"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -61,6 +64,19 @@ const DashboardSidebar = () => {
           Interviews
         </Link>
 
+        {/* Interview History */}
+        <Link
+          to="/interviews/history"
+          className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
+            isActive("/interviews/history")
+              ? "bg-white/10 text-white"
+              : "text-gray-500 hover:bg-white/5 hover:text-white"
+          }`}
+        >
+          Interview History
+        </Link>
+
+        {/* Reports */}
         <Link
           to="/reports"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -76,9 +92,13 @@ const DashboardSidebar = () => {
 
       {/* Logout */}
       <div className="absolute bottom-6 left-6 right-6">
-        <button className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-400 transition hover:border-white/20 hover:text-white">
+
+        <button
+          className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-400 transition hover:border-white/20 hover:text-white"
+        >
           Logout
         </button>
+
       </div>
 
     </aside>
