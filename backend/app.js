@@ -6,7 +6,7 @@ const {errorMiddleware, notFoundMiddleware}= require("./middleware/error.middlew
 const apiLimiter = require("./middleware/rateLimit.middleware");
 const authRoutes = require("./routes/auth.routes");
 const interviewRoutes = require("./routes/interview.routes");
-
+const resumeRoutes = require("./routes/resume.routes");
 const app = express();
 
 
@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/resumes", resumeRoutes);
 
 
 

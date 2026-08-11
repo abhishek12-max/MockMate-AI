@@ -8,6 +8,12 @@ const interviewSchema = new mongoose.Schema(
       required: true,
     },
 
+    resume: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Resume",
+  default: null,
+},
+
     role: {
       type: String,
       required: true,

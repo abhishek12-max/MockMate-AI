@@ -1,6 +1,6 @@
 const interviewModel = require("../models/interview.model");
 const questionModel = require("../models/question.model");
-
+const resumeModel = require("../models/resume.model");
 const {
   generateInterviewQuestions,
   evaluateAnswer,
@@ -17,8 +17,13 @@ const createInterview = async (req, res, next) => {
       totalQuestions,
     } = req.body;
 
+    const resume = await resumeModel.findOne({
+      user: req.user.id,
+    });
+
     const interview = await interviewModel.create({
       user: req.user.id,
+      resume: resume ? resume._id : null,
       role,
       experienceLevel,
       interviewType,
@@ -31,6 +36,7 @@ const createInterview = async (req, res, next) => {
       experienceLevel,
       interviewType,
       totalQuestions,
+      resume,
     });
 
     const questions = await questionModel.insertMany(
