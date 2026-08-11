@@ -1,44 +1,85 @@
 const ai = require("../config/ai");
+const groq = require("../config/groq");
 
 
-// ==============================
-// AI HELPER
-// ==============================
 
 const generateAIResponse = async (prompt) => {
+  
+
   try {
+    console.log("🤖 Trying Gemini...");
+
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
       },
     });
 
+    console.log("✅ Gemini response received");
+
     return response;
-  } catch (error) {
-    console.error("Gemini Error:", error);
+  } catch (geminiError) {
+    console.error("❌ Gemini failed:");
+    console.error("Status:", geminiError?.status);
+    console.error("Message:", geminiError?.message);
 
-    const aiError = new Error(
-      "AI service is temporarily unavailable. Please try again."
-    );
+    
 
-    aiError.statusCode = 503;
+    try {
+      console.log("🔄 Falling back to Groq...");
 
-    throw aiError;
+      const response = await groq.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert technical interviewer and AI assistant. Always return valid JSON when requested. Never use markdown code fences.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 0.2,
+        response_format: {
+          type: "json_object",
+        },
+      });
+
+      console.log("✅ Groq response received");
+
+      return {
+        text: response.choices[0].message.content,
+      };
+    } catch (groqError) {
+      console.error("❌ Groq failed:");
+      console.error("Status:", groqError?.status);
+      console.error("Message:", groqError?.message);
+
+      const aiError = new Error(
+        "AI service is temporarily unavailable. Please try again."
+      );
+
+      aiError.statusCode = 503;
+
+      throw aiError;
+    }
   }
 };
 
-
-// ==============================
-// AI JSON PARSER
-// ==============================
-
 const parseAIJson = (text) => {
   try {
+    if (!text) {
+      throw new Error("Empty AI response");
+    }
+
     return JSON.parse(text);
   } catch (error) {
-    console.error("AI JSON Parse Error:", error);
+    console.error("❌ AI JSON Parse Error:", error);
+    console.error("RAW AI RESPONSE:", text);
 
     const aiError = new Error(
       "AI returned an invalid response. Please try again."
@@ -51,9 +92,7 @@ const parseAIJson = (text) => {
 };
 
 
-// ==============================
-// GENERATE INTERVIEW QUESTIONS
-// ==============================
+
 
 const generateInterviewQuestions = async ({
   role,
@@ -72,32 +111,38 @@ const generateInterviewQuestions = async ({
 Candidate Resume Information:
 
 Skills:
-${resume.skills.join(", ")}
+${resume.skills?.join(", ") || "None"}
 
 Projects:
-${resume.projects
-  .map(
-    (project) =>
-      `${project.name}: ${project.description}
-Technologies: ${project.technologies.join(", ")}`
-  )
-  .join("\n")}
+${
+  resume.projects
+    ?.map(
+      (project) =>
+        `${project.name}: ${project.description}
+Technologies: ${project.technologies?.join(", ") || "None"}`
+    )
+    .join("\n") || "None"
+}
 
 Experience:
-${resume.experience
-  .map(
-    (experience) =>
-      `${experience.role} at ${experience.company}: ${experience.description}`
-  )
-  .join("\n")}
+${
+  resume.experience
+    ?.map(
+      (experience) =>
+        `${experience.role} at ${experience.company}: ${experience.description}`
+    )
+    .join("\n") || "None"
+}
 
 Education:
-${resume.education
-  .map(
-    (education) =>
-      `${education.degree} - ${education.institution}`
-  )
-  .join("\n")}
+${
+  resume.education
+    ?.map(
+      (education) =>
+        `${education.degree} - ${education.institution}`
+    )
+    .join("\n") || "None"
+}
 `
     : "No resume information is available.";
 
@@ -129,6 +174,7 @@ Return ONLY valid JSON:
 }
 
 Rules:
+
 - Generate exactly ${totalQuestions} questions.
 - Follow the difficulty pattern exactly.
 - Questions must be relevant to the selected role.
@@ -151,9 +197,6 @@ Rules:
 };
 
 
-// ==============================
-// EVALUATE ANSWER
-// ==============================
 
 const evaluateAnswer = async ({
   role,
@@ -176,6 +219,7 @@ Candidate's Answer:
 ${answer}
 
 Evaluate the answer based on:
+
 - Technical correctness
 - Relevance
 - Clarity
@@ -196,6 +240,7 @@ Return ONLY valid JSON in exactly this format:
 }
 
 Rules:
+
 - score must be between 0 and 10.
 - Decimals such as 7.5 are allowed.
 - Feedback should be specific to the answer.
@@ -211,9 +256,6 @@ Rules:
 };
 
 
-// ==============================
-// FINAL INTERVIEW REPORT
-// ==============================
 
 const generateInterviewReport = async ({
   role,
@@ -264,6 +306,7 @@ Return ONLY valid JSON:
 }
 
 Rules:
+
 - overallScore must be between 0 and 10.
 - readinessScore must be between 0 and 100.
 - Base the report only on the candidate's actual answers.
@@ -279,7 +322,6 @@ Rules:
 
   return parseAIJson(response.text);
 };
-
 
 // ==============================
 // PARSE RESUME
@@ -322,6 +364,7 @@ Return ONLY valid JSON in exactly this format:
 }
 
 Rules:
+
 - Extract only information explicitly present in the resume.
 - Do NOT invent or assume information.
 - Keep skills concise.
@@ -339,9 +382,6 @@ Rules:
 };
 
 
-// ==============================
-// EXPORT
-// ==============================
 
 module.exports = {
   generateInterviewQuestions,

@@ -7,6 +7,13 @@ import WhyMockMate from "./pages/WhyMockMate";
 import VerifyOtp from "./pages/VerifyOtp";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Resume from "./pages/Resume";
+import InterviewSetup from "./pages/InterviewSetup";
+import Interview from "./pages/Interview";
+import Report from "./pages/Report";
+
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -20,6 +27,11 @@ const App = () => {
         <Route path="/verify-otp" element={<VerifyOtp />}/>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login/>}/>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/interviews/setup" element={<InterviewSetup />}/>
+        <Route path="/interviews/:interviewId/report" element={<Report />}/>
+        <Route path="/interviews/:interviewId" element={<Interview />}/>
       </Routes>
     </BrowserRouter>
   );
