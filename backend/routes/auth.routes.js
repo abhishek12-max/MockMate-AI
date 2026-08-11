@@ -10,6 +10,8 @@ const {
   forgotPassword,
   resetPassword,
   me,
+   googleAuth,
+  googleCallback,
 } = require("../controllers/auth.controller");
 
 const {
@@ -82,6 +84,16 @@ router.get(
   "/me",
   authMiddleware,
   me
+);
+
+router.get(
+  "/google",
+  googleAuth
+);
+
+router.get(
+  "/google/callback",
+  googleCallback
 );
 
 module.exports = router;

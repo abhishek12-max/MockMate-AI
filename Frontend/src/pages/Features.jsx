@@ -1,5 +1,6 @@
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 const features = [
   {
     number: "01",
@@ -67,36 +68,35 @@ const Features = () => {
         </div>
 
         {/* Features */}
-        <div className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
-            <div
-              key={feature.number}
-              className="group bg-[#050505] p-8 transition duration-300 hover:bg-white/[0.03]"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium tracking-widest text-gray-600">
-                  FEATURE
-                </span>
+        {/* Features */}
+<div className="mt-16 grid gap-4 overflow-hidden md:grid-cols-2 md:gap-px lg:grid-cols-3">
+  {features.map((feature) => (
+    <div
+      key={feature.number}
+      className="group rounded-2xl border border-white/10 bg-[#050505] p-8 transition duration-300 hover:bg-white/[0.03] md:rounded-none md:border-0"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium tracking-widest text-gray-600">
+          FEATURE
+        </span>
 
-                <span className="text-sm text-gray-600">
-                  {feature.number}
-                </span>
-              </div>
+        <span className="text-sm text-gray-600">
+          {feature.number}
+        </span>
+      </div>
 
-              <h3 className="mt-12 text-xl font-semibold">
-                {feature.title}
-              </h3>
+      <h3 className="mt-12 text-xl font-semibold">
+        {feature.title}
+      </h3>
 
-              <p className="mt-4 text-sm leading-6 text-gray-500">
-                {feature.description}
-              </p>
+      <p className="mt-4 text-sm leading-6 text-gray-500">
+        {feature.description}
+      </p>
 
-              <div className="mt-8 h-px w-0 bg-white transition-all duration-500 group-hover:w-full" />
-            </div>
-          ))}
-
-
-        </div>
+      <div className="mt-8 h-px w-0 bg-white transition-all duration-500 group-hover:w-full" />
+    </div>
+  ))}
+</div>
 
            {/* Bottom CTA */}
         <div className="mt-24 rounded-3xl border border-white/10 bg-white/[0.02] px-6 py-16 text-center">
@@ -109,14 +109,17 @@ const Features = () => {
             your actual skills and projects.
           </p>
 
-          <button className="mt-8 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-gray-200">
-            Start Practicing
-          </button>
+         <Link
+  to="/register"
+  className="mt-8 inline-block rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-gray-200"
+>
+  Start Practicing
+</Link>
         </div>
 
       </div>
     </section>
-     <Footer/>
+     
     </>
     
   );

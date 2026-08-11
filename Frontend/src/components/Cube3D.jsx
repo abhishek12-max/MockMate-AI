@@ -42,7 +42,7 @@ const Cube3D = () => {
       Math.min(window.devicePixelRatio, 2)
     );
 
-    renderer.setSize(400, 400);
+    renderer.setSize(450, 450);
 
     renderer.outputColorSpace =
       THREE.SRGBColorSpace;
@@ -568,7 +568,7 @@ const Cube3D = () => {
   return (
   <div
   ref={containerRef}
-  className="flex h-[300px] w-[300px] items-center justify-center sm:h-[360px] sm:w-[360px] lg:h-[400px] lg:w-[400px]"
+  className="flex h-[300px] w-[300px] items-center justify-center sm:h-[400px] sm:w-[400px] lg:h-[450px] lg:w-[450px]"
 />
   );
 };

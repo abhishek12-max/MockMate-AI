@@ -4,7 +4,7 @@ const generateOtp = require("../utils/generateOtp");
 const { sendOtpEmail } = require("../services/email.service");
 const {generateAccessToken,generateRefreshToken} = require("../utils/generateToken");
 const jwt = require("jsonwebtoken");
-
+const {getGoogleAuthUrl,getGoogleUser} = require("../services/google.service");
 
 const register = async (req, res, next) => {
   try {
@@ -418,6 +418,133 @@ const me = async (req, res, next) => {
 };
 
 
+const googleAuth = async (req, res, next) => {
+  try {
+    const authUrl = getGoogleAuthUrl();
+
+    return res.redirect(authUrl);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const googleCallback = async (req, res, next) => {
+  try {
+    const { code } = req.query;
+
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        message: "Google authorization code not found",
+      });
+    }
+
+    const googleUser = await getGoogleUser(code);
+
+    if (!googleUser.emailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Google email is not verified",
+      });
+    }
+
+    let user = await User.findOne({
+      email: googleUser.email,
+    });
+
+    // ==========================================
+    // EXISTING USER
+    // ==========================================
+
+    if (user) {
+      if (
+        user.authProvider === "local" &&
+        !user.googleId
+      ) {
+        user.googleId = googleUser.googleId;
+        user.profileImage = googleUser.profileImage;
+        user.isVerified = true;
+      } else if (
+        user.authProvider === "google"
+      ) {
+        user.googleId = googleUser.googleId;
+        user.profileImage = googleUser.profileImage;
+        user.isVerified = true;
+      }
+
+    } else {
+      // ==========================================
+      // NEW GOOGLE USER
+      // ==========================================
+
+      user = await User.create({
+        fullname: googleUser.fullname,
+        email: googleUser.email,
+        profileImage: googleUser.profileImage,
+        authProvider: "google",
+        googleId: googleUser.googleId,
+        isVerified: true,
+      });
+    }
+
+    // ==========================================
+    // GENERATE TOKENS
+    // ==========================================
+
+    const accessToken = generateAccessToken(
+      user._id
+    );
+
+    const refreshToken = generateRefreshToken(
+      user._id
+    );
+
+    user.refreshToken = refreshToken;
+
+    await user.save();
+
+    // ==========================================
+    // ACCESS TOKEN COOKIE
+    // ==========================================
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    // ==========================================
+    // REFRESH TOKEN COOKIE
+    // ==========================================
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    // ==========================================
+    // REDIRECT TO FRONTEND
+    // ==========================================
+
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/dashboard`
+    );
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 module.exports = {
   register,
   verifyOtp,
@@ -427,5 +554,7 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
-  me
+  me,
+  googleAuth,
+  googleCallback,
 };

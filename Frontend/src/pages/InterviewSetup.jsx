@@ -81,6 +81,7 @@ const InterviewSetup = () => {
           questions: response.data.questions,
         },
       });
+
     } catch (error) {
       console.log(
         "INTERVIEW ERROR:",
@@ -91,13 +92,14 @@ const InterviewSetup = () => {
         error.response?.data?.message ||
           "Unable to create interview."
       );
+
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-[#050505] px-6 py-12 text-white">
+    <main className="min-h-screen bg-[#050505] px-4 py-10 text-white sm:px-6 sm:py-12">
 
       <div className="mx-auto max-w-3xl">
 
@@ -108,7 +110,7 @@ const InterviewSetup = () => {
             AI Interview
           </p>
 
-          <h1 className="mt-3 text-4xl font-bold tracking-tight">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Build your interview
           </h1>
 
@@ -126,7 +128,7 @@ const InterviewSetup = () => {
         >
 
           {/* Role */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6">
 
             <label className="text-sm font-medium text-gray-300">
               Target Role
@@ -148,7 +150,7 @@ const InterviewSetup = () => {
           </div>
 
           {/* Experience Level */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6">
 
             <h2 className="text-sm font-medium text-gray-300">
               Experience Level
@@ -183,7 +185,7 @@ const InterviewSetup = () => {
           </div>
 
           {/* Interview Type */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6">
 
             <h2 className="text-sm font-medium text-gray-300">
               Interview Type
@@ -217,7 +219,7 @@ const InterviewSetup = () => {
           </div>
 
           {/* Number of Questions */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6">
 
             <h2 className="text-sm font-medium text-gray-300">
               Number of Questions

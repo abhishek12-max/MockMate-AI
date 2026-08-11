@@ -1,16 +1,29 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const DashboardSidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const { logoutUser } = useAuth();
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+
+    navigate("/login", {
+      replace: true,
+    });
   };
 
   return (
     <aside className="fixed left-0 top-0 hidden h-screen w-64 border-r border-white/10 bg-[#070707] p-6 lg:block">
 
       {/* Logo */}
+
       <Link
         to="/dashboard"
         className="flex items-center gap-3"
@@ -26,9 +39,11 @@ const DashboardSidebar = () => {
       </Link>
 
       {/* Navigation */}
+
       <nav className="mt-12 space-y-2">
 
         {/* Dashboard */}
+
         <Link
           to="/dashboard"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -41,6 +56,7 @@ const DashboardSidebar = () => {
         </Link>
 
         {/* Resume */}
+
         <Link
           to="/resume"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -52,11 +68,13 @@ const DashboardSidebar = () => {
           Resume
         </Link>
 
-        {/* Practice Interview */}
+        {/* Interviews */}
+
         <Link
-          to="/interviews"
+          to="/interviews/setup"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
-            isActive("/interviews")
+            location.pathname.startsWith("/interviews")
+              && !location.pathname.includes("/history")
               ? "bg-white/10 text-white"
               : "text-gray-500 hover:bg-white/5 hover:text-white"
           }`}
@@ -65,6 +83,7 @@ const DashboardSidebar = () => {
         </Link>
 
         {/* Interview History */}
+
         <Link
           to="/interviews/history"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -77,6 +96,7 @@ const DashboardSidebar = () => {
         </Link>
 
         {/* Reports */}
+
         <Link
           to="/reports"
           className={`block rounded-xl px-4 py-3 text-sm font-medium transition ${
@@ -91,10 +111,13 @@ const DashboardSidebar = () => {
       </nav>
 
       {/* Logout */}
+
       <div className="absolute bottom-6 left-6 right-6">
 
         <button
-          className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-400 transition hover:border-white/20 hover:text-white"
+          type="button"
+          onClick={handleLogout}
+          className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm text-gray-400 transition hover:border-red-500/30 hover:text-red-400"
         >
           Logout
         </button>

@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 const steps = [
   {
     number: "01",
@@ -82,7 +82,7 @@ const HowItWorks = () => {
       </div>
     </section>
 
-     <Footer/>
+  
      </>
   );
 };

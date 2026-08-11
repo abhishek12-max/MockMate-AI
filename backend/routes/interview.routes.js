@@ -2,23 +2,29 @@ const express = require("express");
 
 const {
   createInterview,
-   submitAnswer,
-   getInterview,
-   completeInterview,
-   getInterviewReport,
-   getInterviewHistory,
-   trackInterviewActivity,
-   startQuestion
+  submitAnswer,
+  getInterview,
+  completeInterview,
+  getInterviewReport,
+  getInterviewHistory,
+  trackInterviewActivity,
+  startQuestion,
 } = require("../controllers/interview.controller");
 
 const {
-  createInterviewValidator, submitAnswerValidator
+  createInterviewValidator,
+  submitAnswerValidator,
 } = require("../validators/interview.validator");
 
 const validate = require("../middleware/validation.middleware");
 const authMiddleware = require("../middleware/auth.middleware");
 
 const router = express.Router();
+
+
+// ======================================
+// CREATE INTERVIEW
+// ======================================
 
 router.post(
   "/",
@@ -29,6 +35,45 @@ router.post(
 );
 
 
+// ======================================
+// INTERVIEW HISTORY
+// IMPORTANT:
+// This MUST come BEFORE /:interviewId
+// ======================================
+
+router.get(
+  "/history",
+  authMiddleware,
+  getInterviewHistory
+);
+
+
+// ======================================
+// GET INTERVIEW REPORT
+// ======================================
+
+router.get(
+  "/:interviewId/report",
+  authMiddleware,
+  getInterviewReport
+);
+
+
+// ======================================
+// START QUESTION
+// ======================================
+
+router.post(
+  "/:interviewId/questions/:questionId/start",
+  authMiddleware,
+  startQuestion
+);
+
+
+// ======================================
+// SUBMIT ANSWER
+// ======================================
+
 router.post(
   "/:interviewId/questions/:questionId/answer",
   authMiddleware,
@@ -37,11 +82,10 @@ router.post(
   submitAnswer
 );
 
-router.get(
-  "/:interviewId",
-  authMiddleware,
-  getInterview
-);
+
+// ======================================
+// COMPLETE INTERVIEW
+// ======================================
 
 router.post(
   "/:interviewId/complete",
@@ -49,11 +93,10 @@ router.post(
   completeInterview
 );
 
-router.get(
-  "/history",
-  authMiddleware,
-  getInterviewHistory
-);
+
+// ======================================
+// TRACK INTERVIEW ACTIVITY
+// ======================================
 
 router.post(
   "/:interviewId/activity",
@@ -61,16 +104,18 @@ router.post(
   trackInterviewActivity
 );
 
-router.post(
-  "/:interviewId/questions/:questionId/start",
-  authMiddleware,
-  startQuestion
-);
+
+// ======================================
+// GET SINGLE INTERVIEW
+// IMPORTANT:
+// Keep this AFTER /history
+// ======================================
 
 router.get(
-  "/:interviewId/report",
+  "/:interviewId",
   authMiddleware,
-  getInterviewReport
+  getInterview
 );
+
 
 module.exports = router;

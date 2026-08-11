@@ -1,3 +1,4 @@
+import {Link} from "react-router-dom"
 const FinalCTA = () => {
   return (
     <section className="border-t border-white/10 px-6 py-28">
@@ -22,11 +23,21 @@ const FinalCTA = () => {
               your next interview with confidence.
             </p>
 
-            <button className="mt-8 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-gray-200">
-              Start Practicing
-            </button>
+             
           </div>
+
+          <div className="mt-4">
+             <Link
+                to="/register"
+                className="w-full rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-gray-200 sm:w-auto mt-10"
+              >
+                Start Practicing
+              </Link>
+          </div>
+         
         </div>
+
+        
       </div>
     </section>
   );

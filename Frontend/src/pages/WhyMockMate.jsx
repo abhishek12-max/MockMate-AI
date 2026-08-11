@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 const differences = [
   {
     title: "Resume-Aware",
@@ -103,7 +103,7 @@ const WhyMockMate = () => {
 
       </div>
     </main>
-     <Footer/>
+    
      </>
   );
 };
